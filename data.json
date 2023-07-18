@@ -1,1 +1,8 @@
-{ "name": "Calista", "age": 5, "is_male": false }
+[
+  { "id": 1, "name": "Calista", "age": 5, "is_male": false },
+  { "id": 2, "name": "Arief", "age": 5, "is_male": true },
+  { "id": 3, "name": "Hesti", "age": 26, "is_male": false },
+  { "id": 4, "name": "Hendi", "age": 60, "is_male": true },
+  { "id": 5, "name": "Iqbal", "age": 33, "is_male": true },
+  { "id": 6, "name": "Susi", "age": 58, "is_male": false }
+]
