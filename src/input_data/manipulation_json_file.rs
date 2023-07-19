@@ -1,13 +1,26 @@
 use std::{
     // env,
     error::Error,
-    fs::File,
+    fs::{File, OpenOptions},
     io::{Read, Write},
+    path::Path,
 };
 
 use super::Manusia;
 
+fn check_file_exists(_path: &str) -> bool {
+    Path::new(_path).exists()
+}
+
+fn create_new_file(_path: &str) {
+    if !check_file_exists(_path) {
+        let arr: &[Manusia] = &[];
+        write_json(arr, _path)
+    }
+}
+
 pub fn read_json(path: &str) -> Result<Vec<Manusia>, Box<dyn Error>> {
+    create_new_file(path);
     let mut content_file = File::open(path).expect("Failed to open file");
     let mut content = String::new();
 
@@ -21,13 +34,24 @@ pub fn read_json(path: &str) -> Result<Vec<Manusia>, Box<dyn Error>> {
     Ok(json_data)
 }
 
-pub fn write_json(arr: &[Manusia], path: &str) -> Result<(), Box<dyn Error>> {
-    let json_file = serde_json::to_string(arr).expect("failed to write to Buffer");
+pub fn write_json(_data: &[Manusia], _path: &str) {
+    let len = { _data.len() };
 
-    let mut file_write = File::create(path).expect("create file failed");
-    file_write
-        .write_all(json_file.as_bytes())
-        .expect("overwrite file failed");
+    let data_json = serde_json::to_string(&_data).expect("Failed to serialize JSON");
 
-    Ok(())
+    let mut file_open = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .create(true)
+        .open(_path)
+        .expect("Open file are failed");
+    file_open
+        .write_all(data_json.as_bytes())
+        .expect("Failed to write the file");
+
+    if len == 0 {
+        println!("Success create new file.. ")
+    } else {
+        println!("Success saved the data.. ")
+    }
 }
