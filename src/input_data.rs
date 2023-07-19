@@ -1,3 +1,4 @@
+mod delete_data;
 mod get_path;
 mod manipulation_json_file;
 mod querry_data;
@@ -11,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::io::{self};
 use submit_data::write_data;
 
-use crate::input_data::update_data::updating_data;
+use crate::input_data::{delete_data::delete_chunk, update_data::updating_data};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Manusia {
@@ -31,12 +32,17 @@ pub fn run() {
             let mut data_len = { _data.len() };
 
             loop {
+                println!("\n");
                 println!("===== Total data submited : {} ====", data_len);
                 println!("Choose an Option : ");
                 println!("1. Read Data");
                 println!("2. Insert Data");
-                println!("3. Update Data");
-                println!("4. Close Program");
+                if data_len > 0 {
+                    println!("3. Update Data");
+                    println!("4. Delete Data");
+                }
+                println!("99. Close Program");
+                println!("\n");
                 println!("======= Your choice : =======");
 
                 let mut input_option = String::new();
@@ -54,11 +60,23 @@ pub fn run() {
                     }
                     //ok3
                     //update
-                    Ok(3) => updating_data(&mut _data),
+                    Ok(3) => {
+                        if data_len > 0 {
+                            updating_data(&mut _data);
+                            write_json(&_data, path.as_str());
+                        }
+                    }
 
                     //ok4
                     //delete
                     Ok(4) => {
+                        if data_len > 0 {
+                            delete_chunk(&mut _data);
+                            write_json(&_data, path.as_str());
+                            data_len -= 1;
+                        }
+                    }
+                    Ok(99) => {
                         println!("Close the program now ...");
                         break;
                     }

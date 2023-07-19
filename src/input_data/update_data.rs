@@ -2,21 +2,27 @@ use std::io;
 
 use super::Manusia;
 
-fn print_num(data: &[Manusia]) {
+pub fn print_num(data: &[Manusia]) {
     for elm in data {
         println!("{}. See {} data", elm.id, elm.name);
     }
 }
 
-fn switch_next_prev(num: usize, max: usize) {
-    match num {
-        0 => println!("99. Go to next data"),
-        _ => {
-            if num < max {
-                println!("98. Go to previous data");
-                println!("99. Go to next data");
-            } else {
-                println!("98. Go to previous data");
+pub fn switch_next_prev(num: usize, max: usize, len: usize) {
+    if len != max {
+        match num {
+            0 => {
+                if len >= 3 {
+                    println!("99. Go to next data")
+                }
+            }
+            _ => {
+                if num + 1 < max {
+                    println!("98. Go to previous data");
+                    println!("99. Go to next data");
+                } else {
+                    println!("98. Go to previous data");
+                }
             }
         }
     }
@@ -26,16 +32,18 @@ fn switch_next_prev(num: usize, max: usize) {
 pub fn updating_data(data: &mut Vec<Manusia>) {
     println!("Choose data to update");
 
+    let data_len = { data.len() };
+
     let chunk_size = 3;
-    let divided_len = (data.len() + chunk_size - 1) / chunk_size;
+    let divided_len = (data_len + chunk_size - 1) / chunk_size;
     let mut divide_index = 0;
 
     loop {
         println!("\n");
         let start = divide_index * chunk_size;
         let end = (divide_index + 1) * chunk_size;
-        print_num(&data[start..end]);
-        switch_next_prev(divide_index, divided_len);
+        print_num(&data[start..end.min(data_len)]);
+        switch_next_prev(divide_index, divided_len, data_len);
         println!("\n");
         println!("======= Your choice : =======");
 
