@@ -1,7 +1,7 @@
 #[allow(dead_code)]
-mod input_data;
+mod enum_input;
 
-use input_data::run;
+use enum_input::run;
 
 fn main() {
     run();
