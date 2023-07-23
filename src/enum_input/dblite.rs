@@ -1,32 +1,33 @@
-use sqlx::{SqliteConnection, Connection};
-
+use sqlx::{Connection, SqliteConnection};
 #[derive(Debug)]
-struct Vehicle {
+struct Truck {
     id: u32,
+    time_submit: u64,
     vehicle_num: String,
     driver_name: String,
     from_location: String,
     to_location: String,
-    time_drive: String,
-    is_done: bool
+    time_drive: u64,
+    is_done: bool,
 }
 
 enum DataAction {
-    Create(Vehicle),
+    Create(Truck),
     Read,
-    Update(u32, Vehicle),
+    Update(u32, Truck),
     Delete(u32),
-    ReadAll
+    ReadAll,
 }
 
 struct Database {
-    conn : SqliteConnection
+    conn: SqliteConnection,
 }
 
 impl Database {
-   async fn new(filename : &str) -> sqlx::Result<Self> {
-    let conn = SqliteConnection::connect(filename).await?;
-        Ok(Database{conn})
-
+    async fn new(filename: &str) -> sqlx::Result<Self> {
+        let conn = SqliteConnection::connect(filename).await?;
+        Ok(Database { conn })
     }
+
+    async fn create(&self, truck: Truck) {}
 }

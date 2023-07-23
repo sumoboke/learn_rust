@@ -1,15 +1,18 @@
 #![allow(dead_code)]
 
 mod create_enum;
-mod state_enum;
 mod dblite;
+mod state_enum;
 
 use create_enum::create_data;
 use state_enum::Nav::*;
 use std::io;
 
 pub fn run() {
-    let mut nav = Home;
+    
+
+
+                let mut nav = Home;
     loop {
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
