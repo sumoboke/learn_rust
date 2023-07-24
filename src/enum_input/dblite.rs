@@ -1,5 +1,5 @@
-use sqlx::{Connection, SqliteConnection};
-#[derive(Debug)]
+use sqlx::{Connection, FromRow, SqliteConnection};
+#[derive(Debug, FromRow)]
 struct Truck {
     id: u32,
     time_submit: u64,
@@ -29,5 +29,9 @@ impl Database {
         Ok(Database { conn })
     }
 
-    async fn create(&self, truck: Truck) {}
+    async fn create(&self, truck: Truck) -> sqlx::Result<()> {
+        sqlx::query!("
+INSERT INTO vehicles (vehicle_num, driver, from_location, to_location, time_drive) VALUES (?, ?, ?, ?, ?)
+", truck.vehicle_num, truck.driver.truck.from_location, truck.to_location, truck.time_drive)
+    }
 }
