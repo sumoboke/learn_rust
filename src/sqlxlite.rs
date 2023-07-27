@@ -1,4 +1,4 @@
-use sqlx::{query_as, sqlite::SqliteQueryAs, Connect, Connection, SqliteConnection};
+use sqlx::{query_as, sqlite::SqliteQueryAs, Connect, Connection, SqliteConnection};sqlx
 
 #[derive(sqlx::FromRow)]
 struct Vehicle {
