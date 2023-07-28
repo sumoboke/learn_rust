@@ -1,17 +1,22 @@
 mod submit_db;
+mod update_db;
 
+use serde::{Deserialize, Serialize};
 use sqlx::{Connection, FromRow, SqliteConnection};
 use submit_db::write_data;
 
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Deserialize, Serialize)]
 pub struct Truck {
-    id: Option<u32>,
+    #[sqlx(default)]
+    id: Option<i64>,
+    #[sqlx(default)]
     time_submit: Option<i64>,
     vehicle_num: String,
-    driver_name: String,
+    pub driver_name: String,
     from_location: String,
     to_location: String,
     time_drive: i64,
+    #[sqlx(default)]
     is_done: Option<bool>,
 }
 
@@ -71,26 +76,17 @@ impl Database {
     pub async fn submit_data(path: &str) -> sqlx::Result<()> {
         let data = write_data();
         Self::create(path, &data).await?;
-
         Ok(())
     }
 
-    pub async fn read_all(path: &str) -> sqlx::Result<()> {
+    pub async fn read_all(path: &str) -> sqlx::Result<Vec<Truck>> {
         let mut db = Self::new(path).await.unwrap();
         println!("All Trucks");
 
-        let trucks = sqlx::query!(
-            r#"SELECT id, time_submit, vehicle_num, driver_name, time_drive FROM trucks"#
-        )
-        .fetch_all(&mut db.conn)
-        .await?;
+        let trucks = sqlx::query_as!(Truck, r#"SELECT * FROM trucks"#)
+            .fetch_all(&mut db.conn)
+            .await?;
 
-        for truck in trucks {
-            println!(
-                "ID: {}, Vehicle Num: {}, Driver: {}, Time Drive: {}, time submit : {}",
-                truck.id, truck.vehicle_num, truck.driver_name, truck.time_drive, truck.time_submit
-            );
-        }
-        Ok(())
+        Ok(trucks)
     }
 }
